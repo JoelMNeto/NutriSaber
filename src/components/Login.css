@@ -1,10 +1,16 @@
 .login-wrapper {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff; 
-  padding: 16px;
+  background: #ffffff;
+}
+
+.logo {
+  max-width: 102.4px;
+  max-height: 102.4px;
+  margin-bottom: 1rem;
 }
 
 .login-card {
@@ -70,12 +76,6 @@
 
 .color-blue {
   color: #2563eb;
-}
-
-@media (min-width: 420px) {
-  .login-card {
-    padding: 28px;
-  }
 }
 
 .login-register {

@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.jpeg';
 import './Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -19,10 +22,16 @@ function Login() {
 
     console.log('Login simulado:', { username, password });
     alert(`Bem-vindo ao Nutrisaber, ${username}! (login simulado)`);
+
+    // navegar para a rota /home após login simulado
+    navigate('/home');
   }
 
   return (
     <div className="login-wrapper">
+      
+      <img className="logo" src={logo} alt="Nutrisaber Logo" />
+
       <form className="login-card" onSubmit={handleSubmit}>
 
         <h1>Bem-vindo ao <span className="color-blue"> Nutrisaber</span>!</h1>
