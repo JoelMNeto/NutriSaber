@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/menu/:day" element={<MenuDetail />} />
+          <Route path="/menu/:dia_da_semana/:id_refeicao" element={<MenuDetail />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/profile" element={<Profile/>} />

@@ -36,8 +36,6 @@ function Register() {
     }
     setError('');
     const payload = { nome, ra, series, periodos, alergenicos, hobbys, dificuldades, observacoes };
-    console.log('Cadastro simulado:', payload);
-    alert('Aluno cadastrado (simulado).');
     navigate('/');
   }
 

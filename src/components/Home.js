@@ -1,41 +1,42 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Home.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SearchIcon from "@mui/icons-material/Search";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 
 function Home() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [weekMenu, setWeekMenu] = useState([]);
 
   useEffect(() => {
     const abort = new AbortController();
     async function fetchMenu() {
       setLoading(true);
-      setError('');
+      setError("");
       try {
-        const res = await fetch('/api/menu/week', { signal: abort.signal });
-        if (!res.ok) throw new Error('Erro ao buscar menu');
+        const res = await fetch("http://127.0.0.1:8000/cardapio", {
+          signal: abort.signal,
+        });
+
+        if (!res.ok) throw new Error("Erro ao buscar menu");
+
         const data = await res.json();
+
+        setError("");
         setWeekMenu(Array.isArray(data) ? data : []);
       } catch (err) {
-        setWeekMenu([
-          { id: 'monday', day: 'Segunda', summary: 'Arroz, Feijão, Frango grelhado' },
-          { id: 'tuesday', day: 'Terça', summary: 'Macarrão ao molho, Salada' },
-          { id: 'wednesday', day: 'Quarta', summary: 'Peixe assado, Purê' },
-          { id: 'thursday', day: 'Quinta', summary: 'Feijoada leve, Couve' },
-          { id: 'friday', day: 'Sexta', summary: 'Pizza caseira, Salada' },
-        ]);
-        setError('Não foi possível carregar o cardápio; mostrando dados locais.');
+        setError(
+          "Não foi possível carregar o cardápio; mostrando dados locais."
+        );
       } finally {
         setLoading(false);
       }
@@ -44,8 +45,50 @@ function Home() {
     return () => abort.abort();
   }, []);
 
-  function handleOpenDetail(dayId) {
-    navigate(`/menu/${dayId}`);
+  async function loadSearchData(search) {
+    const abort = new AbortController();
+    let url = "http://127.0.0.1:8000/cardapio";
+
+    if (search) {
+      url += `?dia_da_semana=${search}`;
+    }
+
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(url, {
+        signal: abort.signal,
+      });
+
+      if (!res.ok) throw new Error("Erro ao buscar menu");
+
+      const data = await res.json();
+
+      setError("");
+      setWeekMenu(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError("Não foi possível carregar o cardápio; mostrando dados locais.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleOpenDetail(dia_da_semana, id_refeicao) {
+    navigate(`/menu/${dia_da_semana}/${id_refeicao}`);
+  }
+
+  function handleSearch() {
+    if (query.trim() === "") {
+      return;
+    }
+
+    loadSearchData(query.trim());
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   }
 
   return (
@@ -53,13 +96,19 @@ function Home() {
       <header className="home-header">
         <div className="home-header-left">
           <div className="home-chef-circle">
-            <span className="material-symbols-outlined home-chef-icon">chef_hat</span>
+            <span className="material-symbols-outlined home-chef-icon">
+              chef_hat
+            </span>
           </div>
           <div className="home-header-title">Nutrisaber</div>
         </div>
 
         <div className="header-right">
-          <button className="icon-btn" aria-label="perfil" onClick={() => navigate('/profile')}>
+          <button
+            className="icon-btn"
+            aria-label="perfil"
+            onClick={() => navigate("/profile")}
+          >
             <AccountCircleIcon />
           </button>
           <button className="icon-btn" aria-label="notificacoes">
@@ -75,8 +124,13 @@ function Home() {
             placeholder="Pesquise aqui"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyPress}
           />
-          <button className="search-btn" aria-label="buscar">
+          <button
+            className="search-btn"
+            onClick={handleSearch}
+            aria-label="buscar"
+          >
             <SearchIcon />
           </button>
         </div>
@@ -91,15 +145,18 @@ function Home() {
           <div className="days-list">
             {weekMenu.map((day) => (
               <div
-                key={day.id}
+                key={day.id_cardapio_semanal}
                 className="day-card"
-                onClick={() => handleOpenDetail(day.id)}
+                onClick={() => handleOpenDetail(day.dia_da_semana, day.refeicao.id_refeicao)}
                 role="button"
                 tabIndex={0}
-                onKeyPress={(e) => { if (e.key === 'Enter') handleOpenDetail(day.id); }}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter")
+                    handleOpenDetail(day.id_cardapio_semanal);
+                }}
               >
-                <div className="day-title">{day.day}</div>
-                <div className="day-summary">{day.summary}</div>
+                <div className="day-title">{day.dia_da_semana}</div>
+                <div className="day-summary">{day.refeicao.nome_prato}</div>
               </div>
             ))}
           </div>
@@ -107,16 +164,32 @@ function Home() {
       </main>
 
       <footer className="app-footer">
-        <button className="footer-btn active" aria-label="home" onClick={() => navigate('/home')}>
+        <button
+          className="footer-btn active"
+          aria-label="home"
+          onClick={() => navigate("/home")}
+        >
           <HomeOutlinedIcon />
         </button>
-        <button className="footer-btn" aria-label="cardapio" onClick={() => navigate('/menu/today')}>
+        <button
+          className="footer-btn"
+          aria-label="cardapio"
+          onClick={() => navigate("/menu/today")}
+        >
           <MenuBookOutlinedIcon />
         </button>
-        <button className="footer-btn" aria-label="favoritos" onClick={() => navigate('/favorites')}>
+        <button
+          className="footer-btn"
+          aria-label="favoritos"
+          onClick={() => navigate("/favorites")}
+        >
           <FavoriteBorderOutlinedIcon />
         </button>
-        <button className="footer-btn" aria-label="mensagens" onClick={() => navigate('/messages')}>
+        <button
+          className="footer-btn"
+          aria-label="mensagens"
+          onClick={() => navigate("/messages")}
+        >
           <SendOutlinedIcon />
         </button>
       </footer>

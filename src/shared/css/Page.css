@@ -46,3 +46,11 @@
   padding: 12px;
   flex: 1 0 auto;
 }
+
+.color-blue {
+  color: #2563eb;
+}
+
+.color-gray {
+  color: #6b7280;
+}

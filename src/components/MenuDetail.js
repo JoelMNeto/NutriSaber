@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../shared/css/Page.css";
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import "./MenuDetail.css";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 
 function MenuDetail() {
-  const { day } = useParams();
+  const { id_refeicao, dia_da_semana } = useParams();
   const navigate = useNavigate();
   const [detail, setDetail] = useState(null);
 
   useEffect(() => {
     async function fetchDetail() {
       try {
-        const res = await fetch(`/api/menu/day/${day}`);
+        const res = await fetch(
+          `http://127.0.0.1:8000/refeicoes?id_refeicao=${id_refeicao}`
+        );
+
         if (!res.ok) throw new Error("Erro");
-        const data = await res.json();
+
+        const response = await res.json();
+        const data =
+          Array.isArray(response) && response.length > 0
+            ? response[0]
+            : response;
+
         setDetail(data);
       } catch (err) {
-        setDetail({ day, meals: ["Prato 1", "Prato 2", "Sobremesa"] });
+        setDetail(null);
       }
     }
     fetchDetail();
-  }, [day]);
+  }, [id_refeicao]);
 
   return (
     <div className="page">
@@ -42,7 +52,16 @@ function MenuDetail() {
       </header>
 
       <main className="content">
-        Em construção: detalhes do cardápio para {day}
+        <div className="detail-container">
+          <h2>{dia_da_semana}</h2>
+          <h3 className="color-gray">{detail?.nome_prato}</h3>
+          <h4 className="color-blue">Ingredientes</h4>
+          <ul>
+            {detail?.ingredientes?.map((ingrediente) => (
+              <li>{ingrediente?.ingrediente?.nome}</li>
+            ))}
+          </ul>
+        </div>
       </main>
 
       <footer className="app-footer">
