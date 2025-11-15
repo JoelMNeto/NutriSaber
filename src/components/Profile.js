@@ -1,30 +1,12 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../shared/css/Page.css";
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 
-function MenuDetail() {
-  const { day } = useParams();
+function Profile() {
   const navigate = useNavigate();
-  const [detail, setDetail] = useState(null);
-
-  useEffect(() => {
-    async function fetchDetail() {
-      try {
-        const res = await fetch(`/api/menu/day/${day}`);
-        if (!res.ok) throw new Error("Erro");
-        const data = await res.json();
-        setDetail(data);
-      } catch (err) {
-        setDetail({ day, meals: ["Prato 1", "Prato 2", "Sobremesa"] });
-      }
-    }
-    fetchDetail();
-  }, [day]);
-
   return (
     <div className="page">
       <header className="header">
@@ -42,7 +24,7 @@ function MenuDetail() {
       </header>
 
       <main className="content">
-        Em construção: detalhes do cardápio para {day}
+        Em construção: Perfil
       </main>
 
       <footer className="app-footer">
@@ -54,7 +36,7 @@ function MenuDetail() {
           <HomeOutlinedIcon />
         </button>
         <button
-          className="footer-btn active"
+          className="footer-btn"
           aria-label="cardapio"
           onClick={() => navigate("/menu/today")}
         >
@@ -68,7 +50,7 @@ function MenuDetail() {
           <FavoriteBorderOutlinedIcon />
         </button>
         <button
-          className="footer-btn"
+          className="footer-btn active"
           aria-label="mensagens"
           onClick={() => navigate("/messages")}
         >
@@ -79,4 +61,4 @@ function MenuDetail() {
   );
 }
 
-export default MenuDetail;
+export default Profile;

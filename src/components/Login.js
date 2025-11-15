@@ -19,11 +19,6 @@ function Login() {
     }
 
     setError('');
-
-    console.log('Login simulado:', { username, password });
-    alert(`Bem-vindo ao Nutrisaber, ${username}! (login simulado)`);
-
-    // navegar para a rota /home após login simulado
     navigate('/home');
   }
 

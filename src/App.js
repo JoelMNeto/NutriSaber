@@ -6,6 +6,7 @@ import Home from './components/Home';
 import MenuDetail from './components/MenuDetail';
 import Favorites from './components/Favorites';
 import Messages from './components/Messages';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -18,8 +19,7 @@ function App() {
           <Route path="/menu/:day" element={<MenuDetail />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/messages" element={<Messages />} />
-          {/* optional profile route placeholder */}
-          <Route path="/profile" element={<div style={{padding:20}}>Perfil (em construção)</div>} />
+          <Route path="/profile" element={<Profile/>} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,0 +1,48 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chef-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chef-icon {
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.header-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #2563eb;
+}
+
+.content {
+  padding: 12px;
+  flex: 1 0 auto;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
@@ -51,11 +51,11 @@ function Home() {
   return (
     <div className="home-page">
       <header className="home-header">
-        <div className="header-left">
-          <div className="chef-circle">
-            <span className="material-symbols-outlined chef-icon">chef_hat</span>
+        <div className="home-header-left">
+          <div className="home-chef-circle">
+            <span className="material-symbols-outlined home-chef-icon">chef_hat</span>
           </div>
-          <div className="header-title">Nutrisaber</div>
+          <div className="home-header-title">Nutrisaber</div>
         </div>
 
         <div className="header-right">
