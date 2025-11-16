@@ -38,7 +38,7 @@ function Profile() {
         <button
           className="footer-btn"
           aria-label="cardapio"
-          onClick={() => navigate("/menu/today")}
+          
         >
           <MenuBookOutlinedIcon />
         </button>

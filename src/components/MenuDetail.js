@@ -6,11 +6,23 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import { useMemo } from "react";
 
 function MenuDetail() {
   const { id_refeicao, dia_da_semana } = useParams();
   const navigate = useNavigate();
   const [detail, setDetail] = useState(null);
+
+  const alergenicoCores = {
+    Glúten: "#E0B000",
+    Lactose: "#4DA6FF",
+    Soja: "#E07A00",
+    Ovos: "#A04DFF",
+    Amendoim: "#FF4D4D",
+    Castanhas: "#8B5A2B",
+    Trigo: "#D9A441",
+    "Derivados de trigo": "#B88F33",
+  };
 
   useEffect(() => {
     async function fetchDetail() {
@@ -35,6 +47,48 @@ function MenuDetail() {
     fetchDetail();
   }, [id_refeicao]);
 
+  const detailIngredients = useMemo(() => {
+    return detail?.ingredientes || [];
+  }, [detail]);
+
+  const macronutrientes = useMemo(() => {
+    const mapa = {};
+
+    detailIngredients.forEach((item) => {
+      const macro = item.ingrediente.macronutriente;
+      const qtd = item.quantidade;
+
+      if (!mapa[macro]) {
+        mapa[macro] = { total: 0, itens: [] };
+      }
+
+      mapa[macro].total += qtd;
+      mapa[macro].itens.push(item);
+    });
+
+    return mapa;
+  }, [detailIngredients]);
+
+  const alergenicos = useMemo(() => {
+    if (!detail?.ingredientes) return [];
+
+    const lista = [];
+
+    detail.ingredientes.forEach((item) => {
+      const texto = item.ingrediente?.alergenico || "";
+
+      const separados = texto
+        .replace(".", "")
+        .split(/,| e /gi)
+        .map((a) => a.trim())
+        .filter((a) => a.length > 0);
+
+      lista.push(...separados);
+    });
+
+    return [...new Set(lista)];
+  }, [detail]);
+
   return (
     <div className="page">
       <header className="header">
@@ -57,10 +111,45 @@ function MenuDetail() {
           <h3 className="color-gray">{detail?.nome_prato}</h3>
           <h4 className="color-blue">Ingredientes</h4>
           <ul>
-            {detail?.ingredientes?.map((ingrediente) => (
+            {detailIngredients?.map((ingrediente) => (
               <li>{ingrediente?.ingrediente?.nome}</li>
             ))}
           </ul>
+          <h4 className="color-blue">Informações Nutricionais</h4>
+          <ul>
+            <li>
+              Valor Energético:{" "}
+              {detailIngredients.length > 0
+                ? detailIngredients?.reduce(
+                    (a, b) =>
+                      a.ingrediente.valor_energetico +
+                      b.ingrediente.valor_energetico
+                  )
+                : 0}
+              {" cal"}
+            </li>
+
+            {Object.entries(macronutrientes).map(([macro, data]) => (
+              <li>
+                {macro + ": " + data.total + " " + data.itens[0].unidade_medida}
+              </li>
+            ))}
+          </ul>
+          <h4 className="color-blue">Declaração de Alergênicos</h4>
+
+          <div className="alergenicos-tags">
+            {alergenicos.map((alergenico) => (
+              <span
+                key={alergenico}
+                className="alergenico-tag"
+                style={{
+                  backgroundColor: alergenicoCores[alergenico] || "#ccc",
+                }}
+              >
+                {alergenico.toUpperCase()}
+              </span>
+            ))}
+          </div>
         </div>
       </main>
 
@@ -75,7 +164,7 @@ function MenuDetail() {
         <button
           className="footer-btn active"
           aria-label="cardapio"
-          onClick={() => navigate("/menu/today")}
+          
         >
           <MenuBookOutlinedIcon />
         </button>
